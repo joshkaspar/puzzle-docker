@@ -2,9 +2,11 @@
 
 A Docker image for [Puzzle](https://github.com/sidhant947/puzzle), a Flutter app with 300+
 offline brain games. Upstream ships no Docker image and no web release, so this repo builds
-the Flutter web target from source at a pinned commit and serves it with `nginx:1.27-alpine`.
+the Flutter web target from source at a pinned commit and serves it with nginx (stable line,
+Alpine).
 
-Image: `ghcr.io/joshkaspar/puzzle-docker:<short upstream commit>` (also `:latest`).
+Image: `ghcr.io/joshkaspar/puzzle-docker:<short upstream commit>-n<nginx minor>`, e.g.
+`3e70679-n1.30` (also `:latest`).
 
 ## Run it
 
@@ -19,7 +21,7 @@ Settings in `.env`:
 
 | Variable | Default | Meaning |
 |---|---|---|
-| `PUZZLE_TAG` | `3e70679` | Image tag (short upstream commit) |
+| `PUZZLE_TAG` | `3e70679-n1.30` | Image tag (short upstream commit + nginx minor) |
 | `PUZZLE_PORT` | `8095` | Host port |
 | `PUZZLE_BIND` | `0.0.0.0` | Host address to bind |
 | `PUZZLE_CONTAINER_NAME` | `puzzle` | Container name |
@@ -43,12 +45,28 @@ You can still build locally: `docker build -t puzzle .`
 
 ## Updating
 
-Updates are deliberate, never automatic. The compose file pins a commit tag rather than
-`:latest`, so a CI run never changes what a host runs.
+Updates are deliberate, never automatic. The compose file pins an exact tag rather than
+`:latest`, so a CI run never changes what a host runs. Each tag names one upstream commit and
+one nginx minor, so old tags stay available for rollback.
 
-1. Review upstream changes, then set `PUZZLE_REF` in the `Dockerfile` to the new full commit.
-2. Change the default tag (first 7 characters of the commit) in `docker-compose.yml` and
-   `.env.example`.
+What gets updated, and how:
+
+| Component | Where | How it's kept current |
+|---|---|---|
+| Puzzle | `PUZZLE_REF` in the `Dockerfile` | By hand, after reviewing upstream changes |
+| nginx | `FROM nginx:<minor>-alpine` in the `Dockerfile` | Dependabot PR (weekly). Stable line only: odd minors (mainline) are ignored |
+| GitHub Actions | `.github/workflows/image.yml` | Dependabot PR (weekly) |
+| Flutter | `FLUTTER_IMAGE` build arg | Floats on `stable`, like upstream (see below) |
+
+Patch releases within an nginx minor (e.g. 1.30.0 → 1.30.1) arrive when the image is rebuilt.
+To pick one up without other changes, run the workflow manually (Actions → image → Run
+workflow); it overwrites the current tag with the same contents on a newer base.
+
+To release a change:
+
+1. Edit the `Dockerfile` (new `PUZZLE_REF`, or merge the Dependabot PR for nginx).
+2. Change the default tag in `docker-compose.yml` and `.env.example` to match
+   (`<first 7 chars of PUZZLE_REF>-n<nginx minor>`).
 3. Push to `main` and wait for the workflow to finish.
 4. On the host, set `PUZZLE_TAG` in `.env`, then `docker compose pull && docker compose up -d`.
 

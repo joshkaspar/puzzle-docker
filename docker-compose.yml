@@ -2,7 +2,7 @@
 # upstream commit, so a new CI build never changes what a host runs until you bump it.
 services:
   puzzle:
-    image: ghcr.io/joshkaspar/puzzle-docker:${PUZZLE_TAG:-3e70679}
+    image: ghcr.io/joshkaspar/puzzle-docker:${PUZZLE_TAG:-3e70679-n1.30}
     container_name: ${PUZZLE_CONTAINER_NAME:-puzzle}
     ports:
       - "${PUZZLE_BIND:-0.0.0.0}:${PUZZLE_PORT:-8095}:80"

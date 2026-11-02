@@ -1,6 +1,7 @@
 # Puzzle (https://github.com/sidhant947/puzzle) — Flutter web build served by nginx.
 # Upstream ships no web release or image, so this builds from source at a
 # pinned commit. Bump PUZZLE_REF deliberately after reviewing upstream changes.
+# The nginx base tracks the stable line (even minor: 1.30, 1.32, ...).
 
 ARG FLUTTER_IMAGE=ghcr.io/cirruslabs/flutter:stable
 
@@ -16,7 +17,7 @@ RUN flutter config --no-analytics --enable-web \
  && flutter pub get \
  && flutter build web --release --base-href /
 
-FROM nginx:1.27-alpine
+FROM nginx:1.30-alpine
 LABEL org.opencontainers.image.source="https://github.com/joshkaspar/puzzle-docker" \
       org.opencontainers.image.licenses="GPL-3.0-only" \
       org.opencontainers.image.title="puzzle" \

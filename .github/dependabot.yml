@@ -1,0 +1,20 @@
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      actions:
+        patterns: ["*"]
+
+  # Bumps the nginx base in the Dockerfile. The Flutter build image comes from a
+  # build arg, which Dependabot doesn't follow.
+  - package-ecosystem: docker
+    directory: /
+    schedule:
+      interval: weekly
+    ignore:
+      # Odd minors are nginx mainline; stay on the stable line.
+      - dependency-name: nginx
+        versions: ["1.31.x", "1.33.x", "1.35.x", "1.37.x", "1.39.x"]
