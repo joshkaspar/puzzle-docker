@@ -17,7 +17,7 @@ RUN flutter config --no-analytics --enable-web \
  && flutter pub get \
  && flutter build web --release --base-href /
 
-FROM nginx:1.30-alpine
+FROM nginx:1.31-alpine
 LABEL org.opencontainers.image.source="https://github.com/joshkaspar/puzzle-docker" \
       org.opencontainers.image.licenses="GPL-3.0-only" \
       org.opencontainers.image.title="puzzle" \
