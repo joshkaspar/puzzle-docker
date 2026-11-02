@@ -5,6 +5,12 @@ name: image
 on:
   push:
     branches: [main]
+    # Only files that go into the image; docs or Dependabot config changes
+    # shouldn't rebuild and overwrite the current tag.
+    paths:
+      - Dockerfile
+      - nginx.conf
+      - .github/workflows/image.yml
   workflow_dispatch:
 
 permissions:
