@@ -23,7 +23,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      # Tag = <upstream commit>-n<nginx minor>, e.g. 3e70679-n1.30, so a base-image
+      # Tag = <fork commit>-n<nginx minor>, e.g. e546bf4-n1.30, so a base-image
       # bump gets a new tag instead of overwriting the one a host is running.
       - name: Compute image tag
         id: ref

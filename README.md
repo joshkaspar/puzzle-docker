@@ -5,8 +5,12 @@ offline brain games. Upstream ships no Docker image and no web release, so this 
 the Flutter web target from source at a pinned commit and serves it with nginx (stable line,
 Alpine).
 
-Image: `ghcr.io/joshkaspar/puzzle-docker:<short upstream commit>-n<nginx minor>`, e.g.
-`3e70679-n1.30` (also `:latest`).
+The source is the fork [joshkaspar/Puzzle](https://github.com/joshkaspar/Puzzle), which adds
+a Train Tracks puzzle on its `train-tracks` branch. Until it's built into the app, a
+standalone playtest page is served at `/tracks/` (see `tools/tracks/` in the fork).
+
+Image: `ghcr.io/joshkaspar/puzzle-docker:<short fork commit>-n<nginx minor>`, e.g.
+`e546bf4-n1.30` (also `:latest`).
 
 ## Run it
 
@@ -15,13 +19,14 @@ cp .env.example .env    # adjust port, bind address, etc.
 docker compose up -d
 ```
 
-Then open `http://<host>:8095` (or whatever `PUZZLE_PORT` you set).
+Then open `http://<host>:8095` (or whatever `PUZZLE_PORT` you set). Train Tracks is at
+`http://<host>:8095/tracks/`.
 
 Settings in `.env`:
 
 | Variable | Default | Meaning |
 |---|---|---|
-| `PUZZLE_TAG` | `3e70679-n1.30` | Image tag (short upstream commit + nginx minor) |
+| `PUZZLE_TAG` | `e546bf4-n1.30` | Image tag (short fork commit + nginx minor) |
 | `PUZZLE_PORT` | `8095` | Host port |
 | `PUZZLE_BIND` | `0.0.0.0` | Host address to bind |
 | `PUZZLE_CONTAINER_NAME` | `puzzle` | Container name |
@@ -46,14 +51,14 @@ You can still build locally: `docker build -t puzzle .`
 ## Updating
 
 Updates are deliberate, never automatic. The compose file pins an exact tag rather than
-`:latest`, so a CI run never changes what a host runs. Each tag names one upstream commit and
+`:latest`, so a CI run never changes what a host runs. Each tag names one fork commit and
 one nginx minor, so old tags stay available for rollback.
 
 What gets updated, and how:
 
 | Component | Where | How it's kept current |
 |---|---|---|
-| Puzzle | `PUZZLE_REF` in the `Dockerfile` | By hand, after reviewing upstream changes |
+| Puzzle | `PUZZLE_REF` in the `Dockerfile` | By hand: merge upstream into the fork after reviewing it, then bump |
 | nginx | `FROM nginx:<minor>-alpine` in the `Dockerfile` | Dependabot PR (weekly). Stable line only: odd minors (mainline) are ignored |
 | GitHub Actions | `.github/workflows/image.yml` | Dependabot PR (weekly) |
 | Flutter | `FLUTTER_IMAGE` build arg | Floats on `stable`, like upstream (see below) |
@@ -77,5 +82,5 @@ repo. If a future stable release breaks the build, pin one with
 ## License
 
 Puzzle is © its authors and licensed under GPL-3.0. The image contains a build of it, and its
-corresponding source is the upstream commit named by `PUZZLE_REF` plus the files in this repo.
+corresponding source is the fork commit named by `PUZZLE_REF` plus the files in this repo.
 The packaging in this repo is also licensed under GPL-3.0 (see `LICENSE`).
