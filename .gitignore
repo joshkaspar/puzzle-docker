@@ -1,1 +1,5 @@
+# Local Cloudflare credentials and cache
+.cloudflare/
+
+# Local settings made from .env.example (see README)
 .env
