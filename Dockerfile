@@ -8,7 +8,7 @@ ARG FLUTTER_IMAGE=ghcr.io/cirruslabs/flutter:stable
 
 FROM ${FLUTTER_IMAGE} AS build
 ARG PUZZLE_REPO=https://github.com/joshkaspar/Puzzle.git
-ARG PUZZLE_REF=0d8e6b4cffb25625572e0bfd805461245163c438
+ARG PUZZLE_REF=84f9100ad8f904330da2604f40a56d88f61b0ea7
 WORKDIR /src
 RUN git init -q . \
  && git remote add origin "$PUZZLE_REPO" \
