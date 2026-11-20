@@ -10,7 +10,7 @@ a Train Tracks puzzle on its `train-tracks` branch. Until it's built into the ap
 standalone playtest page is served at `/tracks/` (see `tools/tracks/` in the fork).
 
 Image: `ghcr.io/joshkaspar/puzzle-docker:<short fork commit>-n<nginx minor>`, e.g.
-`0ec2e41-n1.30` (also `:latest`).
+`0d8e6b4-n1.30` (also `:latest`).
 
 ## Run it
 
@@ -26,7 +26,7 @@ Settings in `.env`:
 
 | Variable | Default | Meaning |
 |---|---|---|
-| `PUZZLE_TAG` | `0ec2e41-n1.30` | Image tag (short fork commit + nginx minor) |
+| `PUZZLE_TAG` | `0d8e6b4-n1.30` | Image tag (short fork commit + nginx minor) |
 | `PUZZLE_PORT` | `8095` | Host port |
 | `PUZZLE_BIND` | `0.0.0.0` | Host address to bind |
 | `PUZZLE_CONTAINER_NAME` | `puzzle` | Container name |
